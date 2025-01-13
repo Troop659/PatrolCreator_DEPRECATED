@@ -10,7 +10,7 @@ from src.roster import Roster
 ROSTER_PATH = r"C:\Users\jojom\OneDrive\Desktop\roster.pdf"
 
 # How many patrols should be created?
-N_PATROLS = 2
+N_PATROLS = 5
 
 # Should we allow brothers in patrols?
 RELATION_ALLOWED = False
