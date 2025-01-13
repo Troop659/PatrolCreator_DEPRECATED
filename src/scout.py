@@ -79,6 +79,6 @@ class Scout:
     @property
     def is_active(self):
         inactive = [
-            "George M Matta",
+            "First Last",
         ]
         return self.name not in inactive
