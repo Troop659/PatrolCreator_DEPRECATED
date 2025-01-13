@@ -10,7 +10,7 @@ from src.roster import Roster
 ROSTER_PATH = r"C:\Users\jojom\OneDrive\Desktop\roster.pdf"
 
 # How many patrols should be created?
-N_PATROLS = 5
+N_PATROLS = 2
 
 # Should we allow brothers in patrols?
 RELATION_ALLOWED = False
@@ -31,16 +31,28 @@ RANK_THRESH = 0.75
 # A target of 2 with += 0.75 seems to be fine for now, but feel free to
 # change the values
 
-# If you run the program and it doesn't return patrols within a couple seconds,
-# you can either restart it to try again or you should probably change the
-# target and threshold to make it more attainable
+# INSTRUCTIONS
+# STEP 1: `pip install -r requirements.txt` to install the library that
+# will let you parse the roster PDF file
 
+# STEP 2: Set the variables above ^
+
+# STEP 3: Press run
 # Every time you run the program, you will get a new list of patrols, so make
 # sure to save the one you end up wanting to use.
 
-# Finally, if you want to manually remove a scout from being added to patrols,
-# (if they are inactive, for example), go to src/scout.py, scroll down, and add
-# their name to the list of inactive scouts.
+# If the program doesn't execute within a few seconds: something went wrong
+# with creating the patrols. It ran into a situation where it's impossible
+# to create patrols.
+# You can either run the program again (to try to randomly get a new set of
+# patrols) or you can change the variables above to make it more attainable
+
+# MANUALLY MODIFYING SCOUTS
+# To add a Patrol Incompatibility (scouts that cannot be in the same patrol),
+# add them to the src/patrol.py "INCOMPATIBLE" dictionary
+
+# To add an Inactive Scout (scouts that cannot be in any patrol), add them to
+# the src/scout.py "INACTIVE" set
 
 # Glory be to God
 # ------------------------------------------------------------------------------
@@ -71,6 +83,10 @@ while scouts:
     if future_avg_rank == -1:
         pass
     elif abs(future_avg_rank - TARGET_RANK) > RANK_THRESH:
+        continue
+
+    # Check for incompatible scouts
+    if scout.name in patrol.incompatible_scouts:
         continue
 
     # Add to the patrol and remove from bank of scouts

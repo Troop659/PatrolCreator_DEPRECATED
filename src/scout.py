@@ -22,6 +22,13 @@ class Rank(Enum):
 
 
 class Scout:
+
+    # A set of names of inactive scouts
+    INACTIVE: set[str] = {
+        "First Last",
+        "First M Last"
+    }
+
     def __init__(
                 self,
                 first_n: str,
@@ -78,7 +85,4 @@ class Scout:
 
     @property
     def is_active(self):
-        inactive = [
-            "First Last",
-        ]
-        return self.name not in inactive
+        return self.name not in Scout.INACTIVE
