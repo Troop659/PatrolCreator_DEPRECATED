@@ -13,13 +13,23 @@ class Patrol:
 
     # A set of names of scouts that will be in the leaders patrol
     TROOP_LEADERS = {
-        "First Last"
+        "Jacob J Abdou",
+        "John Wasily",
+        "Justin Ibrahim",
+        "Timothy Wasef",
+        "Theodore Georgy",
+        "Peter B Abader",
+        "Jonah W Gaad"
     }
 
     # A set of names of patrol leaders
     # (meaning only one patrol leader per patrol)
     PATROL_LEADERS = {
-        "First Last"
+        "Matthew Abadeer",
+        "Pierre Gerges",
+        "Alexander Youakim",
+        "Marcus M Morgan",
+        "Chris S Kozman"
     }
 
     def __init__(self, scouts: set[Scout]):

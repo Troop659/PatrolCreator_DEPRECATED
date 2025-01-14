@@ -25,8 +25,21 @@ class Scout:
 
     # A set of names of inactive scouts
     INACTIVE: set[str] = {
-        "First Last",
-        "First M Last"
+        "Shady Yowkeem",
+        "Pierre Attalla",
+        "Emmanuel Samaan",
+        "John M Samaan",
+        "Alfred Mekhail",
+        "Youssef Wasfy",
+        "Paul R Boles",
+        "Daniel Ghabrial",
+        "Michael Mohareb",
+        "Jan M Said",
+        "Jason Shohdy",
+        "Adam Bibawy",
+        "Gerges Katkout",
+        "Mark Mikhail",
+        "Andrew E Hakim"
     }
 
     def __init__(
