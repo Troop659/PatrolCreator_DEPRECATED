@@ -69,7 +69,7 @@ def begin_generating(scouts: list[Scout]):
     global GLOBAL_STRIKES
     global LOCAL_STRIKES
     global SCOUTS_LEFT
-    GLOBAL_STRIKES = 50
+    GLOBAL_STRIKES = 100
 
     n_tries = 0
     patrols = []

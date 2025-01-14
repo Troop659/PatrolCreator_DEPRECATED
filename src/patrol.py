@@ -56,6 +56,10 @@ class Patrol:
         if not self.scouts:
             return True
 
+        # If the scout is under 13, half the required age difference
+        if o.age < 13:
+            age //= 2
+
         for scout in self.scouts:
             if abs(o.age - scout.age) <= age:
                 return True
