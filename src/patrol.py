@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from src.scout import Scout
 
 
@@ -6,11 +8,28 @@ class Patrol:
     # A dictionary of name: set of names. Associated names will not be placed
     # in the same patrol
     INCOMPATIBLE = {
-        "First Last": {"First Last", "First M Last"}
+        "First Last": {"First M Last"}
+    }
+
+    # A set of names of scouts that will be in the leaders patrol
+    TROOP_LEADERS = {
+        "First Last"
+    }
+
+    # A set of names of patrol leaders
+    # (meaning only one patrol leader per patrol)
+    PATROL_LEADERS = {
+        "First Last"
     }
 
     def __init__(self, scouts: set[Scout]):
         self.scouts = scouts
+
+    @classmethod
+    def get_leaders_patrol(cls, scouts: set[Scout]):
+        """Given a list of all available scouts, return the Leaders patrol"""
+        scouts = set(sc for sc in scouts if Patrol.is_troop_leader(sc))
+        return cls(scouts)
 
     def add(self, scout: Scout):
         self.scouts.add(scout)
@@ -39,6 +58,8 @@ class Patrol:
 
     @property
     def average_rank(self):
+        if not self.scouts:
+            return -1
         return Patrol.calculate_avg_rank(self.scouts)
 
     @staticmethod
@@ -72,8 +93,47 @@ class Patrol:
 
         return incompatible
 
+    def has_patrol_leader(self) -> bool:
+        """Returns whether or not a patrol leader was already assigned"""
+        return bool(set(i.name for i in self.scouts) & self.PATROL_LEADERS)
+
+    @staticmethod
+    def is_troop_leader(scout: Scout) -> bool:
+        return scout.name in Patrol.TROOP_LEADERS
+
+    @staticmethod
+    def is_patrol_leader(scout: Scout) -> bool:
+        return scout.name in Patrol.PATROL_LEADERS
+
     def __str__(self):
-        return str(self.scouts)
+        # Start with patrol leader
+        output = ""
+        for sc in self.scouts:
+            if sc.name in Patrol.PATROL_LEADERS:
+                output = str(sc) + " (Patrol Leader)\n"
+                break
+
+        # Add the rest of the patrols
+        for scout in self.scouts:
+            output += (
+                str(scout) + "\n"
+                if not Patrol.is_patrol_leader(scout)
+                else ''
+            )
+
+        return output
 
     def __repr__(self):
         return str(self)
+
+    @staticmethod
+    def format_patrol(index: int, patrol: Patrol):
+        output = ""
+        output += (
+            (f"Patrol #{index} " if index else "Leaders Patrol ") +
+            f"({len(patrol.scouts)} Scouts) " +
+            f"({patrol.average_rank} Avg. Rank)\n" +
+            "------------\n" +
+            str(patrol)
+        )
+        return output

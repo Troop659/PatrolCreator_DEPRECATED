@@ -2,6 +2,7 @@ import random
 
 from src.patrol import Patrol
 from src.roster import Roster
+from src.scout import Scout
 
 # These should be the only variables you need to change!
 # ------------------------------------------------------------------------------
@@ -54,61 +55,121 @@ RANK_THRESH = 0.75
 # To add an Inactive Scout (scouts that cannot be in any patrol), add them to
 # the src/scout.py "INACTIVE" set
 
+# Also make sure to add Troop and Patrol leaders in src/patrol.py
+
+# For anything that requires manual name input, make sure to enter the exact
+# First, Middle Initial, and Last Name in Title casing
+
 # Glory be to God
 # ------------------------------------------------------------------------------
 
-roster = Roster(ROSTER_PATH)
-scouts = list(roster.scouts)
 
-# Initialize N_PATROLS empty patrols
-patrols: list[Patrol] = []
-for _ in range(N_PATROLS):
-    patrols.append(Patrol(set()))
+def begin_generating(scouts: list[Scout]):
+    global GLOBAL_STRIKES
+    global LOCAL_STRIKES
+    global SCOUTS_LEFT
+    GLOBAL_STRIKES = 20
 
-curr_patrol = 0
-while scouts:
-    scout = random.choice(scouts)
-    patrol = patrols[curr_patrol]
+    n_tries = 0
+    patrols = []
+    while not patrols:
+        SCOUTS_LEFT = 0
+        LOCAL_STRIKES = 2 * len(scouts)
 
-    # Check for relation
-    if not RELATION_ALLOWED and patrol.has_related_scout(scout):
-        continue
+        if n_tries == GLOBAL_STRIKES:
+            print("Could not generate patrols with current config.")
+            return
 
-    # Check for age
-    if not patrol.has_valid_age(scout, AGE_DIFFERENCE):
-        continue
+        print(f"Attempting to generate patrols. Try #{n_tries + 1}")
+        patrols = generate_patrols(scouts.copy())
+        n_tries += 1
 
-    # Check for patrols to have generally similar rank formations
-    future_avg_rank = patrol.future_avg_rank(set([scout]))
-    if future_avg_rank == -1:
-        pass
-    elif abs(future_avg_rank - TARGET_RANK) > RANK_THRESH:
-        continue
+    output_patrols(patrols, set(scouts))
 
-    # Check for incompatible scouts
-    if scout.name in patrol.incompatible_scouts:
-        continue
 
-    # Add to the patrol and remove from bank of scouts
-    patrol.add(scout)
-    scouts.remove(scout)
+def generate_patrols(scouts: list[Scout]) -> list[Patrol]:
+    global LOCAL_STRIKES
+    global SCOUTS_LEFT
 
-    # Go to the next patrol to add a scout
-    curr_patrol += 1
-    if curr_patrol >= N_PATROLS:
-        curr_patrol = 0
+    # Initialize N_PATROLS empty patrols
+    patrols: list[Patrol] = []
+    for _ in range(N_PATROLS):
+        patrols.append(Patrol(set()))
 
-# Format and display the created patrols in terminal. We also write to a file
-output = ""
-for ind, patrol in enumerate(patrols):
-    output += f"Patrol #{ind + 1}\n"
-    output += f"({len(patrol.scouts)} Scouts) "
-    output += f"({patrol.average_rank} Avg. Rank)\n"
-    output += "------------\n"
+    curr_patrol = 0
+    while scouts:
+        # If we have no movement for LOCAL_STRIKES times, we give up
+        curr_scouts_left = len(scouts)
+        if curr_scouts_left == SCOUTS_LEFT:
+            LOCAL_STRIKES -= 1
+        SCOUTS_LEFT = curr_scouts_left
 
-    output += "\n".join(map(str, patrol.scouts)) + "\n\n"
+        if LOCAL_STRIKES <= 0:
+            return []
 
-print(output)
-# CAREFUL. This will *overwrite* the content in patrols.txt
-with open("patrols.txt", "w") as f:
-    f.write(output)
+        scout = random.choice(scouts)
+        patrol = patrols[curr_patrol]
+
+        # Check for relation
+        if not RELATION_ALLOWED and patrol.has_related_scout(scout):
+            continue
+
+        # Check for age
+        if not patrol.has_valid_age(scout, AGE_DIFFERENCE):
+            continue
+
+        # Check for patrols to have generally similar rank formations
+        future_avg_rank = patrol.future_avg_rank(set([scout]))
+        if future_avg_rank == -1:
+            pass
+        elif abs(future_avg_rank - TARGET_RANK) > RANK_THRESH:
+            continue
+
+        # Check for incompatible scouts
+        if scout.name in patrol.incompatible_scouts:
+            continue
+
+        # Don't add scouts from the leaders patrol to any patrol
+        if patrol.is_troop_leader(scout):
+            scouts.remove(scout)
+            continue
+
+        # Patrols can only have one patrol leader each
+        if patrol.has_patrol_leader() and patrol.is_patrol_leader(scout):
+            continue
+
+        # Add to the patrol and remove from bank of scouts
+        patrol.add(scout)
+        scouts.remove(scout)
+
+        # Go to the next patrol to add a scout
+        curr_patrol += 1
+        if curr_patrol >= N_PATROLS:
+            curr_patrol = 0
+
+    return patrols
+
+
+def output_patrols(patrols: list[Patrol], all_scouts: set[Scout]):
+    # Format and display the created patrols in terminal.
+    # We also write to a file
+    output = Patrol.format_patrol(
+        0, Patrol.get_leaders_patrol(all_scouts)
+    ) + "\n"
+    for ind, patrol in enumerate(patrols):
+        output += Patrol.format_patrol(ind + 1, patrol) + "\n\n"
+
+    # Output to terminal
+    print(output)
+
+    # Output to file
+    # CAREFUL. This will *overwrite* the content in patrols.txt
+    with open("patrols.txt", "w") as f:
+        f.write(output)
+
+
+if __name__ == "__main__":
+    roster = Roster(ROSTER_PATH)
+    all_scouts = list(roster.scouts)
+    scouts = list(roster.scouts)
+    begin_generating(scouts)
