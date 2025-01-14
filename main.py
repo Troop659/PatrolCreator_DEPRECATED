@@ -58,7 +58,8 @@ RANK_THRESH = 0.75
 # Also make sure to add Troop and Patrol leaders in src/patrol.py
 
 # For anything that requires manual name input, make sure to enter the exact
-# First, Middle Initial, and Last Name in Title casing
+# First, Middle Initial, and Last Name in Title casing as it appears on
+# the Roster
 
 # Glory be to God
 # ------------------------------------------------------------------------------
