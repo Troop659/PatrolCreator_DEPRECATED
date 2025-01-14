@@ -69,13 +69,13 @@ def begin_generating(scouts: list[Scout]):
     global GLOBAL_STRIKES
     global LOCAL_STRIKES
     global SCOUTS_LEFT
-    GLOBAL_STRIKES = 20
+    GLOBAL_STRIKES = 50
 
     n_tries = 0
     patrols = []
     while not patrols:
         SCOUTS_LEFT = 0
-        LOCAL_STRIKES = 2 * len(scouts)
+        LOCAL_STRIKES = 10 * len(scouts)
 
         if n_tries == GLOBAL_STRIKES:
             print("Could not generate patrols with current config.")
