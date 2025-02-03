@@ -8,10 +8,10 @@ from src.scout import Scout
 # ------------------------------------------------------------------------------
 
 # The file path to the roster
-ROSTER_PATH = r"C:\Users\jojom\OneDrive\Desktop\roster.pdf"
+ROSTER_PATH = r"C:\Users\jojom\OneDrive\Desktop\groster.pdf"
 
 # How many patrols should be created?
-N_PATROLS = 5
+N_PATROLS = 4
 
 # Should we allow brothers in patrols?
 RELATION_ALLOWED = False
@@ -22,7 +22,7 @@ AGE_DIFFERENCE = 2
 # The target average rank of all scouts in a patrol
 # Unranked = 0, Scout = 1, etc.
 # No guarantees of exact target, but should be within a threshold.
-TARGET_RANK = 2
+TARGET_RANK = 0
 
 # Patrols will be within +- rank threshold of target rank, on average
 # If threshold is too low, you risk running into an impossible patrol setup

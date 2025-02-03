@@ -43,18 +43,41 @@ class Roster:
 
                 # Once we reach a new rank of scouts, add the prev ones to set
                 if "YOUTH MEMBERS: " in line:
-                    matches = Roster.parser.finditer(relevant_text)
-                    for match in matches:
-                        scout = Scout._from_match(match, rank_str)
-                        if scout.is_active:
-                            self.scouts.add(scout)
-
-                    rank_str = line.replace("YOUTH MEMBERS:", "").split(" ")[1]
-                    self.all_text += relevant_text
+                    rank_str = self._parse_section(
+                        line, relevant_text, rank_str
+                    )
                     relevant_text = ""
 
-                    if rank_str == "EAGLE":
-                        break
+                if "ADULT MEMBERS" in line and relevant_text:
+                    rank_str = self._parse_section(
+                        line, relevant_text, rank_str
+                    )
+                    relevant_text = ""
+
+                if rank_str == "EAGLE":
+                    break
+
+    def _parse_section(
+                self,
+                line: str,
+                relevant_text: str,
+                rank_str: str
+            ) -> str:
+        """Parses a "Youth Members" section and returns the next rank"""
+
+        if rank_str == "EAGLE":
+            return rank_str
+
+        matches = Roster.parser.finditer(relevant_text)
+        for match in matches:
+            scout = Scout._from_match(match, rank_str)
+            if scout.is_active:
+                self.scouts.add(scout)
+
+        rank_str = line.replace("YOUTH MEMBERS:", "").split(" ")[1]
+        self.all_text += relevant_text
+
+        return rank_str
 
     def as_dict(self) -> dict[str, list[Scout]]:
         scout_dict = defaultdict(list)
