@@ -15,7 +15,10 @@ class Rank(Enum):
 
     @staticmethod
     def from_string(rank_str: str):
-        return Rank[rank_str]
+        rank_str = rank_str.upper() if rank_str else ""
+        if rank_str in {i.name for i in Rank}:
+            return Rank[rank_str]
+        return Rank.UNRANKED
 
     def __str__(self):
         return self.name
@@ -25,7 +28,18 @@ class Scout:
 
     # A set of names of inactive scouts
     INACTIVE: set[str] = {
-        "First Last"
+        "Mark Benjamin",
+        "Jonathan A Dous",
+        "Mark Mattar",
+        "Peter Mattar",
+        "Markous M REZKALLA",
+        "Marten M REZKALLA",
+        "Paul Hanna",
+        "Aaron Hanna",
+        "Youssef E Agayby",
+        "Samuel H Benjamin",
+        "Kareem Gendy",
+        "Rafik Gendy"
     }
 
     def __init__(
@@ -44,13 +58,14 @@ class Scout:
         self.rank = rank
 
     @classmethod
-    def _from_match(cls, match: Match, rank: str):
+    def _from_match(cls, match: Match):
+        rank = match.group("rank")
         return Scout(
             match.group("first_n"),
             match.group("middle_i"),
             match.group("last_n"),
             int(match.group("age")),
-            Rank.from_string(rank) if rank else Rank.UNRANKED
+            Rank.from_string(rank)
         )
 
     def __eq__(self, o: Scout):

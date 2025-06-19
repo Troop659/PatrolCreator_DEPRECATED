@@ -11,7 +11,9 @@ class Roster:
     parser = re.compile(
         r"\b\d\d?\s(?P<first_n>[a-zA-Z]+)\s((?P<middle_i>[A-Z])\s)?" +
         r"(?P<last_n>[a-zA-Z]+)\s([a-zA-Z]+\s)?" +
-        r"(?P<age>\d\d\b)"
+        r"(?P<age>\d\d\b)" +
+        r".+(M|F)\s" +
+        r"(?P<rank>\b[a-zA-Z]+)?"
     )
 
     def __init__(self, file_path: str):
@@ -70,7 +72,7 @@ class Roster:
 
         matches = Roster.parser.finditer(relevant_text)
         for match in matches:
-            scout = Scout._from_match(match, rank_str)
+            scout = Scout._from_match(match)
             if scout.is_active:
                 self.scouts.add(scout)
 

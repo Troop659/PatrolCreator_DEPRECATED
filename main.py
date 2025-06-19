@@ -8,7 +8,10 @@ from src.scout import Scout
 # ------------------------------------------------------------------------------
 
 # The file path to the roster
-ROSTER_PATH = r"C:\Users\jojom\OneDrive\Desktop\groster.pdf"
+ROSTER_PATH = r"C:\Users\jojom\OneDrive\Desktop\roster.pdf"
+
+# Whether or not we should write out (and overwrite) the patrols.txt file
+WRITE_OUT = True
 
 # How many patrols should be created?
 N_PATROLS = 4
@@ -22,12 +25,12 @@ AGE_DIFFERENCE = 2
 # The target average rank of all scouts in a patrol
 # Unranked = 0, Scout = 1, etc.
 # No guarantees of exact target, but should be within a threshold.
-TARGET_RANK = 0
+TARGET_RANK = 2
 
 # Patrols will be within +- rank threshold of target rank, on average
 # If threshold is too low, you risk running into an impossible patrol setup
 # If threshold is too high, you might as well not have a target rank
-RANK_THRESH = 0.75
+RANK_THRESH = 0.5
 
 # A target of 2 with += 0.75 seems to be fine for now, but feel free to
 # change the values
@@ -165,8 +168,9 @@ def output_patrols(patrols: list[Patrol], all_scouts: set[Scout]):
 
     # Output to file
     # CAREFUL. This will *overwrite* the content in patrols.txt
-    with open("patrols.txt", "w") as f:
-        f.write(output)
+    if WRITE_OUT:
+        with open("patrols.txt", "w") as f:
+            f.write(output)
 
 
 if __name__ == "__main__":
