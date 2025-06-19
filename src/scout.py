@@ -28,12 +28,12 @@ class Scout:
 
     # A set of names of inactive scouts
     INACTIVE: set[str] = {
-        "Mark Benjamin",
+        "Mark Beniamin",
         "Jonathan A Dous",
         "Mark Mattar",
         "Peter Mattar",
-        "Markous M REZKALLA",
-        "Marten M REZKALLA",
+        "Markous M Rezkalla",
+        "Marten M Rezkalla",
         "Paul Hanna",
         "Aaron Hanna",
         "Youssef E Agayby",

@@ -16,6 +16,11 @@ class Roster:
         r"(?P<rank>\b[a-zA-Z]+)?"
     )
 
+    # Counts
+    TOTAL_SCOUTS = 0
+    SCOUTS_INCLUDED = 0
+    SCOUTS_EXCLUDED = 0
+
     def __init__(self, file_path: str):
         self.file_path = file_path
 
@@ -73,8 +78,13 @@ class Roster:
         matches = Roster.parser.finditer(relevant_text)
         for match in matches:
             scout = Scout._from_match(match)
+            Roster.TOTAL_SCOUTS += 1
+
             if scout.is_active:
                 self.scouts.add(scout)
+                Roster.SCOUTS_INCLUDED += 1
+            else:
+                Roster.SCOUTS_EXCLUDED += 1
 
         rank_str = line.replace("YOUTH MEMBERS:", "").split(" ")[1]
         self.all_text += relevant_text

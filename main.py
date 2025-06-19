@@ -163,6 +163,20 @@ def output_patrols(patrols: list[Patrol], all_scouts: set[Scout]):
     for ind, patrol in enumerate(patrols):
         output += Patrol.format_patrol(ind + 1, patrol) + "\n\n"
 
+    # Verification statistics
+    output += (
+        f"The Parser found {Roster.TOTAL_SCOUTS} scouts in the Roster.\n" +
+        f"{Roster.SCOUTS_INCLUDED} were included in patrols and " +
+        f"{Roster.SCOUTS_EXCLUDED} were excluded.\n"
+    )
+
+    if Roster.SCOUTS_EXCLUDED != len(Scout.INACTIVE):
+        output += (
+            f"{len(Scout.INACTIVE)} scouts were set as inactive. " +
+            "Ensure that the scouts listed as inactive had their names " +
+            "typed exactly as found on the roster."
+        )
+
     # Output to terminal
     print(output)
 
